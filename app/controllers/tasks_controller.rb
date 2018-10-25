@@ -1,5 +1,6 @@
 class TasksController < ApplicationController
   before_action :set_project
+  before_action :set_task, execpt: [:create]
 
   def create
     @task = @project.tasks.create(task_params)
@@ -7,14 +8,20 @@ class TasksController < ApplicationController
   end
 
   def destroy
-    @task = @project.tasks.find(params[:id])
     if @task.destroy
-      flash[:success] = "Task was deleted"
+      flash[:success] = "Task was deleted."
       end
     else
-      flash:[:error] = "Task was not deleted"
-      redirect_to @project
+      flash[:error] = "Task was not deleted."
+    end
+    redirect_to @project
   end
+
+  def complete
+    @task.update_atrribute(:completed_at, Time.now)
+    redirect_to @project, notice: "Task Completed"
+  end
+
 
 private
 
@@ -22,8 +29,10 @@ private
       @project = Project.find(params[:project_id])
   end
 
+  def set_task
+      @task = @project.tasks.find(params[:id])
+  end
+
   def task_params
     @params[:tasks].permit(:content)
   end
-
-end
