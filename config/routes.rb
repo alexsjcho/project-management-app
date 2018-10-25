@@ -5,4 +5,5 @@ Rails.application.routes.draw do
       patch :complete
     end
   end
+  root "projects#index"
 end
